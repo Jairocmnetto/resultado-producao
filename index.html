@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Produção</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        main {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #004080;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #00264d;
+        }
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+        }
+        .modal img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .modal-buttons a {
+            display: inline-block;
+            padding: 12px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+        #downloadBtn {
+            background-color: #004080;
+        }
+        #whatsappBtn {
+            background-color: #25D366;
+        }
+        #whatsappBtn:hover {
+            background-color: #128C7E;
+        }
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            color: #aaa;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <h2>Registro de Produção</h2>
+    <form id="producaoForm">
+        <label for="Processo">Processo:</label>
+        <select id="Processo" required>
+            <option value="Costura">Costura</option>
+            <option value="Montagem">Montagem</option>
+            <option value="Apoio">Apoio</option>
+            <option value="Almoxarifado">Almoxarifado</option>
+            <option value="Costura Programada">Costura Programada</option>
+        </select>
+
+        <label for="Marca">Marca:</label>
+        <select id="Marca" required>
+            <option value="Asics">Asics</option>
+            <option value="Umbro">Umbro</option>
+            <option value="Fila">Fila</option>
+        </select>
+
+        <label for="turno">Turno:</label>
+        <select id="turno" required>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="A/B">A/B</option>
+        </select>
+
+        <label for="meta">Meta :</label>
+        <input type="number" id="meta" required>
+
+        <label for="realizado">Realizado:</label>
+        <input type="number" id="realizado" required>
+
+        <label for="eficiencia">Eficiência:</label>
+        <input type="text" id="eficiencia" required>
+
+        <label for="motivo">Motivo (se necessário):</label>
+        <input type="text" id="motivo">
+
+        <button type="submit">Gerar Relatório</button>
+    </form>
+</main>
+
+<script>
+document.getElementById('producaoForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    // Obter valores do formulário
+    const processo = document.getElementById('Processo').value;
+    const marca = document.getElementById('Marca').value;
+    const turno = document.getElementById('turno').value;
+    const meta = document.getElementById('meta').value;
+    const realizado = document.getElementById('realizado').value;
+    const eficiencia = document.getElementById('eficiencia').value;
+    const motivo = document.getElementById('motivo').value;
+
+    // Criar a mensagem formatada para compartilhamento
+    const textoCompartilhamento = `Processo: ${processo}\nMarca: ${marca}\nTurno: ${turno}\nMeta: ${meta}\nRealizado: ${realizado}\nEficiência: ${eficiencia}\nMotivo: ${motivo}`;
+
+    // Abrir WhatsApp
+    const linkWhatsApp = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoCompartilhamento)}`;
+    window.open(linkWhatsApp, '_blank');
+});
+</script>
+</body>
+</html>
