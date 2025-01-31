@@ -132,9 +132,13 @@
             <option value="A/B">A/B</option>
         </select>
 
-        <label for="meta">Meta :</label>
-        <input type="number" id="meta" required>
+        <label for="metapcp">Meta PCP:</label>
+        <input type="number" id="metapcp" required>
 
+        <label for="metaprd">Meta Prod.:</label>
+        <input type="number" id="metaprd" required>
+
+        
         <label for="realizado">Realizado:</label>
         <input type="number" id="realizado" required>
 
@@ -156,13 +160,15 @@ document.getElementById('producaoForm').addEventListener('submit', async functio
     const processo = document.getElementById('Processo').value;
     const marca = document.getElementById('Marca').value;
     const turno = document.getElementById('turno').value;
-    const meta = document.getElementById('meta').value;
+    const metapcp = document.getElementById('metapcp').value;
+    const metaprd = document.getElementById('metaprd').value;
     const realizado = document.getElementById('realizado').value;
     const eficiencia = document.getElementById('eficiencia').value;
     const motivo = document.getElementById('motivo').value;
 
-    // Criar a mensagem formatada para compartilhamento
-    const textoCompartilhamento = `Processo: ${processo}\nMarca: ${marca}\nTurno: ${turno}\nMeta: ${meta}\nRealizado: ${realizado}\nEficiência: ${eficiencia}\nMotivo: ${motivo}`;
+    // Criar a mensagem formatada para compartilhamento    
+    
+    const textoCompartilhamento = `Confira meu resultado de produção! \nProcesso: ${processo}\nMarca: ${marca}\nTurno: ${turno}\nMeta PCP: ${metapcp}\nMeta Prod.: ${metaprd}\nRealizado: ${realizado}\nEficiência: ${eficiencia}\nMotivo: ${motivo}`;
 
     // Abrir WhatsApp
     const linkWhatsApp = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoCompartilhamento)}`;
