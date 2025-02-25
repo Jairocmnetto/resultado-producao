@@ -12,7 +12,7 @@
     body {
       font-family: Arial, sans-serif;
       padding: 10px;
-      background-color: black;
+      background-color: rgb(240, 240, 240);
     }
   
     nav {
@@ -28,16 +28,14 @@
       padding: 0;
       margin: 10px;
       display: flex;
-    }
-    nav ul li {
-      margin-right: 10px;
+      gap: 10px;
     }
     nav ul li a {
       color: #fff;
       text-decoration: none;
       font-weight: bold;
       padding: 10px 20px;
-      background-color: #ff0000;
+      background-color: #000000;
       border-radius: 5px;
     }
     nav ul li a:hover {
@@ -49,7 +47,7 @@
       background: #fff;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgb(255, 0, 0);
+      box-shadow: 0 0 10px rgb(0, 0, 0);
     }
   
     label {
@@ -71,7 +69,7 @@
     button {
       width: 100%;
       padding: 15px;
-      background-color: #ff0000;
+      background-color: #000000;
       font-weight: bold;
       color: #fff;
       border: none;
@@ -81,7 +79,7 @@
       margin-top: 15px;
     }
     button:hover {
-      background-color: #fa7f7f;
+      background-color: #189100;
     }
   
     /* Media query para telas pequenas */
@@ -144,6 +142,7 @@
     <ul>
       <li><a href="#" onclick="showSection('resultado'); return false;">Resultado de produção</a></li>
       <li><a href="#" onclick="showSection('banco'); return false;">Banco de Hora</a></li>
+      <li><a href="#" onclick="showSection('projecao'); return false;">Projeção</a></li>
     </ul>
   </nav>
   
@@ -231,6 +230,50 @@
     </main>
   </section>
   
+  <!-- Seção: Projeção (Página 3) -->
+  <section id="projecao" style="display:none;">
+    <main>
+      <h2>Projeção</h2>
+      <form id="projecaoForm">
+        <label for="dataProjecao">Data:</label>
+        <input type="date" id="dataProjecao" required />
+  
+        <label for="MarcaProjecao">Marca:</label>
+        <select id="MarcaProjecao" required>
+          <option value="">Selecione a Marca</option>
+        </select>
+  
+        <label for="gerenteProjecao">Gerente:</label>
+        <select id="gerenteProjecao" required>
+          <option value="">Selecione o Gerente</option>
+        </select>
+  
+        <label for="setorProjecao">SETOR:</label>
+        <select id="setorProjecao" required>
+          <option value="">Selecione o Setor</option>
+        </select>
+  
+        <!-- Atualizado: Substituir "Turno" por "PROJEÇÃO" -->
+        <label for="turnoProjecao">PROJEÇÃO:</label>
+        <input type="number" id="turnoProjecao" required step="1" />
+  
+        <!-- Atualizado: Substituir "CELULAS" por "EFICIÊNCIA" -->
+        <label for="celulasProjecao">EFICIÊNCIA:</label>
+        <input type="number" id="celulasProjecao" required step="1" />
+  
+        <!-- Atualizado: Substituir "MO" por "FALTAS" -->
+        <label for="moProjecao">FALTAS:</label>
+        <input type="number" id="moProjecao" required step="1" />
+  
+        <!-- Reincluído o campo CX's PARADAS -->
+        <label for="cxsParadasProjecao">CX's PARADAS:</label>
+        <input type="number" id="cxsParadasProjecao" required step="1" />
+  
+        <button type="submit">Salvar Projeção</button>
+      </form>
+    </main>
+  </section>
+  
   <!-- Modal Pop-up de Aguarde/Sucesso -->
   <div id="aguardeModal">
     <div id="aguardeModalContent">
@@ -248,8 +291,10 @@
   <script>
     // Alterna entre as seções
     function showSection(sectionId) {
-      document.getElementById('resultado').style.display = (sectionId === 'resultado') ? 'block' : 'none';
-      document.getElementById('banco').style.display = (sectionId === 'banco') ? 'block' : 'none';
+      const sections = ['resultado', 'banco', 'projecao'];
+      sections.forEach(id => {
+        document.getElementById(id).style.display = (id === sectionId) ? 'block' : 'none';
+      });
     }
   
     // Carrega os dados da planilha
@@ -263,6 +308,7 @@
         console.log("Dados da planilha carregados:", planilhaDados);
         preencherMarcas();
         preencherMarcasBanco();
+        preencherMarcasProjecao();
       } catch (error) {
         console.error('Erro ao carregar dados da planilha:', error);
       }
@@ -483,7 +529,6 @@ Motivo: _*${motivo}*_`;
       event.preventDefault();
       const submitButton = this.querySelector('button[type="submit"]');
       submitButton.disabled = true;
-      // Exibe o modal com a animação (ou, posteriormente, a mensagem de sucesso)
       document.getElementById('aguardeModal').style.display = 'flex';
   
       const dataBanco = document.getElementById('dataBanco').value;
@@ -510,13 +555,10 @@ Motivo: _*${motivo}*_`;
         body: JSON.stringify(dataToSend)
       })
       .then(response => {
-        // Em vez de alert, atualiza o modal para exibir a mensagem de sucesso centralizada
         const modalContent = document.getElementById('aguardeModalContent');
-        // Armazena o conteúdo original (a animação)
         const originalContent = modalContent.innerHTML;
         modalContent.innerHTML = '<p style="font-size:18px;font-weight:bold; color:white; margin:20px 0;">Banco de Hora salvo com sucesso!</p>';
         setTimeout(() => {
-          // Restaura o conteúdo original e oculta o modal
           modalContent.innerHTML = originalContent;
           document.getElementById('aguardeModal').style.display = 'none';
         }, 2000);
@@ -524,6 +566,110 @@ Motivo: _*${motivo}*_`;
       .catch(error => {
         console.error("Erro ao salvar dados:", error);
         alert("Erro ao salvar dados no Banco de Hora.");
+        document.getElementById('aguardeModal').style.display = 'none';
+      })
+      .finally(() => {
+        submitButton.disabled = false;
+      });
+    });
+  
+    /* Funções da aba Projeção */
+    function preencherMarcasProjecao() {
+      const marcaSelect = document.getElementById('MarcaProjecao');
+      marcaSelect.innerHTML = '<option value="">Selecione a Marca</option>';
+      const marcasUnicas = [...new Set(planilhaDados.map(item => item.Marca.trim()))];
+      marcasUnicas.forEach(marca => {
+        const option = document.createElement('option');
+        option.value = marca;
+        option.textContent = marca;
+        marcaSelect.appendChild(option);
+      });
+    }
+    function updateGerenteOptionsProjecao() {
+      const marcaSelecionada = document.getElementById('MarcaProjecao').value.trim().toLowerCase();
+      const gerenteSelect = document.getElementById('gerenteProjecao');
+      gerenteSelect.innerHTML = '<option value="">Selecione o Gerente</option>';
+      if (!marcaSelecionada) return;
+      const gerentesFiltrados = planilhaDados
+        .filter(item => item.Marca.trim().toLowerCase() === marcaSelecionada)
+        .map(item => item.Gerente.trim());
+      const gerentesUnicos = [...new Set(gerentesFiltrados)];
+      gerentesUnicos.forEach(gerente => {
+        const option = document.createElement('option');
+        option.value = gerente;
+        option.textContent = gerente;
+        gerenteSelect.appendChild(option);
+      });
+      document.getElementById('setorProjecao').innerHTML = '<option value="">Selecione o Setor</option>';
+    }
+    function updateSetorOptionsProjecao() {
+      const marcaSelecionada = document.getElementById('MarcaProjecao').value.trim().toLowerCase();
+      const gerenteSelecionado = document.getElementById('gerenteProjecao').value.trim().toLowerCase();
+      const setorSelect = document.getElementById('setorProjecao');
+      setorSelect.innerHTML = '<option value="">Selecione o Setor</option>';
+      if (!marcaSelecionada || !gerenteSelecionado) return;
+      const setoresFiltrados = planilhaDados
+        .filter(item =>
+          item.Marca.trim().toLowerCase() === marcaSelecionada &&
+          item.Gerente.trim().toLowerCase() === gerenteSelecionado
+        )
+        .map(item => item.Processo.trim());
+      const setoresUnicos = [...new Set(setoresFiltrados)];
+      setoresUnicos.forEach(setor => {
+        const option = document.createElement('option');
+        option.value = setor;
+        option.textContent = setor;
+        setorSelect.appendChild(option);
+      });
+    }
+    document.getElementById('MarcaProjecao').addEventListener('change', updateGerenteOptionsProjecao);
+    document.getElementById('gerenteProjecao').addEventListener('change', updateSetorOptionsProjecao);
+    // Como os campos PROJEÇÃO, EFICIÊNCIA, FALTAS e CX's PARADAS agora são inputs, não há necessidade de listeners adicionais.
+    document.getElementById('projecaoForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const submitButton = this.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      document.getElementById('aguardeModal').style.display = 'flex';
+  
+      const dataProjecao = document.getElementById('dataProjecao').value;
+      const marca = document.getElementById('MarcaProjecao').value;
+      const gerente = document.getElementById('gerenteProjecao').value;
+      const setor = document.getElementById('setorProjecao').value;
+      const proj = document.getElementById('turnoProjecao').value;
+      const eficiencia = document.getElementById('celulasProjecao').value;
+      const faltas = document.getElementById('moProjecao').value;
+      const cxParadas = document.getElementById('cxsParadasProjecao').value;
+  
+      const dataToSend = {
+        "DATA": dataProjecao,
+        "MARCA": marca,
+        "GERENTE": gerente,
+        "SETOR": setor,
+        "PROJECAO": proj,
+        "EFICIENCIA": eficiencia,
+        "FALTAS": faltas,
+        "CX_PARADAS": cxParadas
+      };
+  
+      // URL para registrar os dados da aba Projeção
+      fetch("https://script.google.com/macros/s/AKfycbzpZ16UeBLe5BrgjmlyuN436GYsASQLqN5FmLtpHxmKYaPqWBGtLLp3EMEXXijB1sRrXg/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dataToSend)
+      })
+      .then(response => {
+        const modalContent = document.getElementById('aguardeModalContent');
+        const originalContent = modalContent.innerHTML;
+        modalContent.innerHTML = '<p style="font-size:18px;font-weight:bold; color:white; margin:20px 0;">Projeção salva com sucesso!</p>';
+        setTimeout(() => {
+          modalContent.innerHTML = originalContent;
+          document.getElementById('aguardeModal').style.display = 'none';
+        }, 2000);
+      })
+      .catch(error => {
+        console.error("Erro ao salvar dados:", error);
+        alert("Erro ao salvar dados da Projeção.");
         document.getElementById('aguardeModal').style.display = 'none';
       })
       .finally(() => {
